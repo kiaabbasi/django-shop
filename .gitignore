@@ -1,0 +1,133 @@
+# --- Django ---
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# --- Virtual Environment ---
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# --- IDE / Editor ---
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# --- OS Generated ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --- Python ---
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+pip-delete-this-directory.txt
+pip-wheel-metadata/
+
+# --- Node / Frontend (اگر داری) ---
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log*
+.pnpm-debug.log*
+
+# --- Static & Media (تولید) ---
+staticfiles/
+static/
+*.css.map
+*.js.map
+
+# --- Testing ---
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.pytest_cache/
+.mypy_cache/
+
+# --- Secrets & Config ---
+.env
+.env.local
+.env.*.local
+config/.env
+*.pem
+*.key
+*.crt
+
+# --- Database (اگر از فایل باشه) ---
+*.sql
+*.dump
+
+# --- Migrations (در صورت نیاز) ---
+# فقط در موارد خاص که migrationهای محلی داری
+# migrations/__pycache__/
+# !migrations/__init__.py
+
+# --- Deployment ---
+*.orig
+*.rej
+*.bak
+*.swp
+*~
+
+# --- Docker ---
+Dockerfile*
+.dockerignore
+.docker/
+
+# --- Celery ---
+celerybeat-schedule
+celerybeat.pid
+
+# --- PyCharm ---
+# .idea/**/workspace.xml
+# .idea/**/tasks.xml
+# .idea/**/usage.statistics.xml
+# .idea/**/dictionaries
+# .idea/**/shelf
+# .idea/**/contentModel.xml
+# .idea/**/dataSources/
+# .idea/**/dataSources.ids
+# .idea/**/dataSources.local.xml
+# .idea/**/sqlDataSources.xml
+# .idea/**/dynamic.xml
+# .idea/**/uiDesigner.xml
+# .idea/**/dbnavigator.xml
+
+# --- VS Code ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
