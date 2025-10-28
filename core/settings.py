@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.products',
     'apps.comments',
     'apps.cart',
+    'apps.users',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,5 @@ MEDIA_ROOT = BASE_DIR / 'media' # phisycal Directory to store media files
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.CustomUser'
