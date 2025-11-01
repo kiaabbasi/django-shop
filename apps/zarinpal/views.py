@@ -24,7 +24,8 @@ domain = '127.0.0.1:8000/'
 
 
 def send_request(request, payment_id, total_price):
-    payment_want_to_pay= get_object_or_404(Payment.objects.get(id = payment_id))
+    payment_want_to_pay = get_object_or_404(Payment, id=payment_id)
+
 
     if  payment_want_to_pay.successful:
         return HttpResponse('این پرداخت قبلا انجام شده است.')
@@ -47,7 +48,7 @@ def send_request(request, payment_id, total_price):
             if response_json['data']['code'] == 100:
                 return redirect(ZP_API_STARTPAY + str(response_json['data']['authority']))
             else:
-                return HttpResponse(f'Error: {response_json['data']["code"]}')
+                return HttpResponse(f"Error: {response_json['data']['code']}")
         else:
             return HttpResponse('Failed to get a valid response from the payment gateway.')
 
@@ -66,7 +67,7 @@ def verify(request, order_id):
     if  status =="NOK":
         return HttpResponse('پرداخت ناموفق')
     
-    peyment_want_to_pay = get_object_or_404(Payment.objects.get(id = order_id))
+    peyment_want_to_pay = get_object_or_404(Payment, id=order_id)
     total_price = peyment_want_to_pay.amount
 
    
@@ -84,11 +85,20 @@ def verify(request, order_id):
         response = response.json()
         if response['data']['code'] == 100:
             Bank_Transaction.objects.create(
-            peyment_on=peyment_want_to_pay, 
-            peymentid=str(authority),
+            payment_on=peyment_want_to_pay, 
+            paymentid=str(authority),
         )
             peyment_want_to_pay.successful = True
             peyment_want_to_pay.save()
+        if response['data']['code'] == 101:
+            if not Bank_Transaction.objects.filter(payment_on=peyment_want_to_pay, paymentid=str(authority)).exists():
+                Bank_Transaction.objects.create(
+                    payment_on=peyment_want_to_pay, 
+                    paymentid=str(authority),
+                )
+                peyment_want_to_pay.successful = True
+                peyment_want_to_pay.save()
+                
             
         if response['data']['code'] == 100 or response['data']['code'] == 101:
             return HttpResponse("پرداخت موفق")

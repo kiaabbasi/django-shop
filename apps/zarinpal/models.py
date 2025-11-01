@@ -4,6 +4,6 @@ from apps.payments.models import Payment
 
 class Bank_Transaction(models.Model):
     date = models.DateTimeField(auto_now_add=True) 
-    peyment_on  = models.ForeignKey(Payment, on_delete=models.RESTRICT)
-    peymentid=models.CharField(max_length=256)
+    payment_on  = models.ForeignKey(Payment, on_delete=models.RESTRICT)
+    paymentid=models.CharField(max_length=256)
 

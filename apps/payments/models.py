@@ -4,7 +4,7 @@ from apps.orders.models import Order
 class PaymentMethod(models.TextChoices):
     ZARINPAL = 'ZP', 'ZarinPal'
     PAYPAL = 'PP', 'PayPal'
-    BITCOIN = 'BTC', 'Bitcoin'
+    BITCOIN = 'TON', 'Toncoin'
     INPLACEPAYMENT = 'IP', 'InPlacePayment'
 
 # Create your models here.
