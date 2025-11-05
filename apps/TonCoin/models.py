@@ -35,4 +35,4 @@ class Wallet_admin(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f'Wallet {self.name} ({self.address})'
+        return f'{self.address}'
