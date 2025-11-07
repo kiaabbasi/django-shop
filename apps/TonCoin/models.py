@@ -21,6 +21,8 @@ class TonPaymentRequest(models.Model):
     address = models.ForeignKey('Wallet_admin', on_delete=models.CASCADE, related_name='wallet')
     message = models.CharField(max_length=255,unique=True)  # unique message to identify the payment
     created_at = models.DateTimeField(auto_now_add=True)
+    mached_transaction = models.ForeignKey(TonTransaction, on_delete=models.SET_NULL, null=True, blank=True, related_name='matched_request')
+    is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Request for {self.amount} TON to {self.address}'

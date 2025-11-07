@@ -7,6 +7,7 @@ class ToncoinConfig(AppConfig):
     name = 'apps.TonCoin'
 
     def ready(self):
+        from . import signals  
         try :
             from .services.ton_transaction_tracer import start_ton_checker
             threading.Thread(target=start_ton_checker, daemon=True).start()

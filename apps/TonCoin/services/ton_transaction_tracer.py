@@ -2,20 +2,20 @@ import requests
 import time
 from decimal import Decimal
 from django.conf import settings
-from apps.TonCoin.models import TonTransaction, TonPaymentRequest
-from apps.TonCoin.views import get_admin_wallet
+from ..models import TonTransaction, TonPaymentRequest,Wallet_admin
+from ..views import get_admin_wallet
 import logging
 
 TON_API_URL = "https://tonapi.io/v2/blockchain/getTransactions"
 
 
-def check_ton_transactions():
+def check_ton_transactions(wallet_address):
     """
     این تابع هر بار لیست تراکنش‌های جدید ولت رو می‌گیره و در دیتابیس ذخیره می‌کنه
     """
     try:
-        YOUR_WALLET = get_admin_wallet().address
-        response = requests.get(f"{TON_API_URL}?account={YOUR_WALLET}&limit=50")
+        
+        response = requests.get(f"{TON_API_URL}?account={wallet_address}&limit=50")
         data = response.json().get("transactions", [])
 
         for tx in data:
@@ -56,5 +56,6 @@ def start_ton_checker():
     حلقه‌ی همیشگی که هر ۳۰ ثانیه یک بار check_ton_transactions را اجرا می‌کند.
     """
     while True:
-        check_ton_transactions()
+        for w in Wallet_admin.objects.filter(is_active=True):
+            check_ton_transactions(w.address)
         time.sleep(30)
