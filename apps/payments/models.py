@@ -9,7 +9,7 @@ class PaymentMethod(models.TextChoices):
 
 # Create your models here.
 class Payment(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payments')
     method = models.CharField(max_length=3, choices=PaymentMethod.choices)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)

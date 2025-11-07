@@ -22,19 +22,21 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.user}"
+    
+    def save(self, *args, **kwargs):
+        # وضعیت قبلی را پیدا کن
+        if self.pk:
+            old_status = Order.objects.get(pk=self.pk).status
+        else:
+            old_status = None
 
-
-class Payment(models.Model):
-    order = models.OneToOneField(
-        Order,
-        on_delete=models.CASCADE,
-        related_name='payment'
-    )
-    payment_method = models.CharField(max_length=50)
-    transaction_id = models.CharField(max_length=100, unique=True)
-    amount = models.DecimalField(max_digits=20, decimal_places=2)
-    is_successful = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Payment for Order #{self.order.id}"
+        super().save(*args, **kwargs)
+        from .signals import order_status_changed
+        # اگر تغییر کرده بود، سیگنال بفرست
+        if old_status and old_status != self.status:
+            order_status_changed.send(
+                sender=self.__class__,
+                order=self,
+                old_status=old_status,
+                new_status=self.status,
+            )
