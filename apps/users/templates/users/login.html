@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login Page</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" ><br><br>
+        <label for="otppassword">OTP:</label>
+        <input type="otppassword" id="otppassword" name="otppassword" disabled >
+        <button type="button" onclick="sendOTP()">Send OTP</button>
+        <br><br>
+        <button type="submit">Login</button>
+    </form>
+</body>
+<script>
+    function sendOTP() {
+        // Simulate sending OTP
+        let user_info = document.getElementById("username").value;
+        
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "{% url 'send_otp' %}");
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+                alert(response.message);
+                document.getElementById("otppassword").disabled = false;
+                
+            } else {
+                alert("Server error: " + xhr.status);
+            }
+        };
+
+        xhr.send("user_info=" + encodeURIComponent(user_info));
+        
+    }
+</script>
+</html>

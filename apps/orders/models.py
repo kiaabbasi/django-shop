@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth import get_user_model
 
 
 class OrderStatus(models.TextChoices):
@@ -11,7 +11,7 @@ class OrderStatus(models.TextChoices):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20,
@@ -32,7 +32,7 @@ class Order(models.Model):
 
         super().save(*args, **kwargs)
         from .signals import order_status_changed
-        # اگر تغییر کرده بود، سیگنال بفرست
+        
         if old_status and old_status != self.status:
             order_status_changed.send(
                 sender=self.__class__,
