@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -87,8 +90,8 @@ DATABASES = {
         'NAME': 'django_shop',
         'HOST': 'localhost',
         'PORT': '5432',
-        'USER': 'django_user',
-        'PASSWORD': '73keafGadew',
+        'USER': os.getenv("DB_USERNAME"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
     }
 }
 
@@ -141,3 +144,6 @@ AUTHENTICATION_BACKENDS = [
     'apps.users.auth_backends.OTPBackend',
     'django.contrib.auth.backends.ModelBackend',  
 ]
+
+
+SMS_API_KEY = os.getenv("SMS_API_KEY")

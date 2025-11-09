@@ -4,6 +4,8 @@ from django.views.generic import View
 from django.http import JsonResponse
 from .models import OTPVerification
 import random
+from kavenegar import KavenegarAPI
+from core.settings import SMS_API_KEY
 
 class LoginView(View):
     template_name = 'users/login.html'
@@ -66,6 +68,9 @@ class SendOTPView(View):
             code = str(random.randint(100_000,999_999))
             OTPVerification.objects.create(user=user,otp_code=code)
             print(code)
+            otpa = KavenegarAPI(SMS_API_KEY)
+            params = { 'sender' : '2000660110', 'receptor': user.phone_number, 'message' :f'رمز عبور یک بار مصرف شما {code}' }
+            response = otpa.sms_send(params)
             return JsonResponse({"message":"OTP Sent"},)
         else :
             return JsonResponse({"message":"Faild To send"},)
