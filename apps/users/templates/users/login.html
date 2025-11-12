@@ -4,45 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #6B73FF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(107, 115, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .button-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .button-group button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-login {
+            background: #6B73FF;
+            color: #fff;
+        }
+
+        .btn-otp {
+            background: #FF6B6B;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <h1>Login Page</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" ><br><br>
-        <label for="otppassword">OTP:</label>
-        <input type="otppassword" id="otppassword" name="otppassword" disabled >
-        <button type="button" onclick="sendOTP()">Send OTP</button>
-        <br><br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="otppassword">OTP:</label>
+                <input type="text" id="otppassword" name="otppassword" disabled>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-otp" onclick="sendOTP()">Send OTP</button>
+                <button type="submit" class="btn-login">Login</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function sendOTP() {
+            let user_info = document.getElementById("username").value;
+            
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'send_otp' %}");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    alert(response.message);
+                    document.getElementById("otppassword").disabled = false;
+                } else {
+                    alert("Server error: " + xhr.status);
+                }
+            };
+
+            xhr.send("user_info=" + encodeURIComponent(user_info));
+        }
+    </script>
 </body>
-<script>
-    function sendOTP() {
-        // Simulate sending OTP
-        let user_info = document.getElementById("username").value;
-        
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "{% url 'send_otp' %}");
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
-
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-                alert(response.message);
-                document.getElementById("otppassword").disabled = false;
-                
-            } else {
-                alert("Server error: " + xhr.status);
-            }
-        };
-
-        xhr.send("user_info=" + encodeURIComponent(user_info));
-        
-    }
-</script>
 </html>

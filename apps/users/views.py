@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import View
 from django.http import JsonResponse
@@ -18,7 +18,7 @@ class LoginView(View):
         # Handle login logic here
         otp = request.POST.get('otppassword')
         
-        if str(otp)!="":
+        if str(otp)!="" and str(otp) != "None":
             return self.handle_otp(request)
         else:
             return self.handle_password(request)
@@ -32,7 +32,8 @@ class LoginView(View):
             OTP_v= OTPVerification.objects.filter(user=user,otp_code=otp).last()
             if OTP_v and OTP_v.is_valid():
                 login(request, user)
-        return render(request, self.template_name, {'message': 'OTP Login successful'})
+                return redirect("productList")
+        return render(request, self.template_name, {'message': 'username or password is incorrect'})
     
     def handle_password(self, request):
         username = request.POST.get('username')
@@ -41,10 +42,8 @@ class LoginView(View):
         
         if user :
             login(request,user)
-        
-        return render(request, self.template_name, {'message': 'Password Login successful'})
-
-
+            return redirect("productList")
+        return render(request, self.template_name, {'message': 'username or password is incorrect'})
 
 class SendOTPView(View):
 

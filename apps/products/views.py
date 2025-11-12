@@ -1,3 +1,8 @@
 from django.shortcuts import render
+from django.views.generic import View
 
-# Create your views here.
+class ProductsView(View):
+    template_name = 'products/index.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
