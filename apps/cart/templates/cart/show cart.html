@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+<ul>
+{% for item in cart.items.all %}
+    <li>
+        {{ item.product.name }} — {{ item.quantity }}
+        <form action="{% url 'cart:decrease_item' item.product.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">deacris</button>
+        </form>
+        <form action="{% url 'cart:add_to_cart' item.product.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Add more</button>
+        </form>
+
+    </li>
+    <form action="{% url 'orders:create' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Check Out</button>
+    </form>
+
+{% empty %}
+    <li>No items in cart</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

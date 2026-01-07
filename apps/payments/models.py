@@ -6,6 +6,7 @@ class PaymentMethod(models.TextChoices):
     PAYPAL = 'PP', 'PayPal'
     BITCOIN = 'TON', 'Toncoin'
     INPLACEPAYMENT = 'IP', 'InPlacePayment'
+    WALLET = 'WAL', 'InternalWallet'
 
 # Create your models here.
 class Payment(models.Model):

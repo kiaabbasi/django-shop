@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from apps.products.models import Product
 
 class OrderStatus(models.TextChoices):
     PENDING = 'PENDING', 'Pending'
@@ -8,6 +8,12 @@ class OrderStatus(models.TextChoices):
     SHIPPED = 'SHIPPED', 'Shipped'
     DELIVERED = 'DELIVERED', 'Delivered'
     CANCELED = 'CANCELED', 'Canceled'
+
+class OrderItem(models.Model):
+    on_order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1) 
+    added_at = models.DateTimeField(auto_now_add=True)
 
 
 class Order(models.Model):
@@ -18,13 +24,10 @@ class Order(models.Model):
         choices=OrderStatus.choices,
         default=OrderStatus.PENDING
     )
-    total_amount = models.DecimalField(max_digits=20, decimal_places=2)
-
     def __str__(self):
         return f"Order #{self.id} - {self.user}"
     
     def save(self, *args, **kwargs):
-        # وضعیت قبلی را پیدا کن
         if self.pk:
             old_status = Order.objects.get(pk=self.pk).status
         else:

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>جزئیات سفارش</h2>
+
+{% for i in order.items.all %}
+    {{i.product.name}} {{ i.quantity }} {{i.product.price}}
+{% endfor %}
+<p>وضعیت: {{ order.status }}</p>
+
+{% if order.status == "PENDING" %}
+    <form method="post" action="{url 'payments:create' order.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">
+            پرداخت سفارش 💳
+        </button>
+    </form>
+{% else %}
+    <p>این سفارش پرداخت شده است ✅</p>
+{% endif %}
+
+{% endblock %}
