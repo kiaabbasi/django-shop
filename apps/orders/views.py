@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from .models import Order,OrderItem
 from django.db import transaction
 from django.contrib import messages
-from django.views.generic import DetailView
+from django.views.generic import DetailView,ListView
 
 @method_decorator(login_required, name='dispatch')
 class CreateOrder(View):
@@ -50,3 +50,15 @@ class ShowOrder(DetailView):
             user=self.request.user
         )
        
+
+
+@method_decorator(login_required, name='dispatch')
+class ShowOrders(ListView):
+    model = Order
+    template_name = 'orders/show orders.html'
+    context_object_name = 'orders'
+    paginate_by = 0
+    
+    
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('-order_date')

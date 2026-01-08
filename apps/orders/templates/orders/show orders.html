@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>سفارش‌های من</h2>
+
+{% for order in orders %}
+    <div>
+        <p>سفارش #{{ order.id }}</p>
+        <p>وضعیت: {{ order.status }}</p>
+
+        <a href="{% url 'orders:order_detail' order.id %}">
+            مشاهده جزئیات
+        </a>
+    </div>
+    <hr>
+{% empty %}
+    <p>هنوز سفارشی ثبت نکرده‌اید.</p>
+{% endfor %}
+
+{% endblock %}
