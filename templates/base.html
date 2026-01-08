@@ -16,7 +16,16 @@
 {% endif %}
 
 <nav>
-    <div><div>
+    <div style="display: flex;">
+        <a href="{% url 'products:product_list' %}">products</a>
+        &NonBreakingSpace;
+        <a href="{% url 'cart:show_cart' %}">cart</a>
+        &NonBreakingSpace;
+        <a href="{% url 'orders:show_all_user_order' %}">orders</a>
+        
+        &NonBreakingSpace;
+        
+    <div>
     <!-- navbar -->
 </nav>
 
