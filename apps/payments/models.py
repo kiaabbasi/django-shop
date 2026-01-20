@@ -3,14 +3,14 @@ from apps.orders.models import Order
 
 class PaymentMethod(models.TextChoices):
     ZARINPAL = 'ZP', 'ZarinPal'
-    PAYPAL = 'PP', 'PayPal'
-    BITCOIN = 'TON', 'Toncoin'
+    #PAYPAL = 'PP', 'PayPal'
+    TonCoin = 'TON', 'Toncoin'
     INPLACEPAYMENT = 'IP', 'InPlacePayment'
     WALLET = 'WAL', 'InternalWallet'
 
-# Create your models here.
+
 class Payment(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payments')
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
     method = models.CharField(max_length=3, choices=PaymentMethod.choices)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)

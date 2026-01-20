@@ -21,6 +21,6 @@ def handle_order_payment(sender, payment, **kwargs):
 
 @receiver(order_status_changed)
 def handle_order_status_change(sender, order, old_status, new_status, **kwargs):
-    print(f"🔄 Order {order.id} changed from {old_status} → {new_status}")
+    print(f"🔄 Order {order.id} changed from {old_status} → {new_status} this notif come from orders/signal.py")
 
     #TODO send notification to user about status change

@@ -3,9 +3,12 @@ from django.conf import settings
 import requests
 import json
 from apps.payments.models import Payment
+from apps.payments.signals import payment_successful
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from .models import Bank_Transaction
+from django.urls import reverse
+from django.contrib import messages
 
 
 MERCHANT = "YOUR_MERCHANT_ID_HERE"
@@ -20,21 +23,21 @@ if settings.SANDBOX:
 
 
 
-domain = '127.0.0.1:8000/'
+domain = "127.0.0.1:8000"
 
 
-def send_request(request, payment_id, total_price):
+def send_request(request, payment_id):
     payment_want_to_pay = get_object_or_404(Payment, id=payment_id)
 
-
+    total_price = payment_want_to_pay.amount
     if  payment_want_to_pay.successful:
         return HttpResponse('این پرداخت قبلا انجام شده است.')
     data = {
         "merchant_id": settings.MERCHANT ,
-        "amount": total_price,  # دریافت مبلغ پرداخت به عنوان پارامتر
+        "amount": float(total_price),  # دریافت مبلغ پرداخت به عنوان پارامتر
         "description": "خرید",
         "mobile": "",
-        "callback_url":  f"{domain}zarinpal/verify/{payment_id}",
+        "callback_url":  f"{domain}{reverse("zarinpall:verify",args=[int(payment_id)])}",
     }
     data = json.dumps(data)
     headers = {'content-type': 'application/json', 'content-length': str(len(data))}
@@ -58,29 +61,34 @@ def send_request(request, payment_id, total_price):
         return HttpResponse('Connection Error')
 
 
-#http://127.0.0.1:8000/zarinpal/verify/2?Authority=A00000000000000000000000000202690354&Status=OK
+#http://127.0.0.1:8000/zarinpall/verify/2?Authority=A00000000000000000000000000202690354&Status=OK
 @csrf_exempt
-def verify(request, order_id):
+def verify(request, payment_id):
     
     authority = request.GET.get('Authority')
     status = request.GET.get("Status")
     if  status =="NOK":
         return HttpResponse('پرداخت ناموفق')
     
-    peyment_want_to_pay = get_object_or_404(Payment, id=order_id)
+    peyment_want_to_pay = get_object_or_404(Payment, id=payment_id)
     total_price = peyment_want_to_pay.amount
+
 
    
     data = {
         "merchant_id": MERCHANT,
-        "amount": total_price,
+        "amount": float(total_price),
         "authority": authority,
     }
     data = json.dumps(data)
     # set content length by data
     headers = {'content-type': 'application/json', 'content-length': str(len(data)) }
     response = requests.post(ZP_API_VERIFY, data=data,headers=headers)
+    
 
+    ## just for test
+    #payment_successful.send(sender=Payment, payment=peyment_want_to_pay)  
+    ## end test
     if response.status_code == 200:
         response = response.json()
         if response['data']['code'] == 100:
@@ -90,18 +98,13 @@ def verify(request, order_id):
         )
             peyment_want_to_pay.successful = True
             peyment_want_to_pay.save()
-        if response['data']['code'] == 101:
-            if not Bank_Transaction.objects.filter(payment_on=peyment_want_to_pay, paymentid=str(authority)).exists():
-                Bank_Transaction.objects.create(
-                    payment_on=peyment_want_to_pay, 
-                    paymentid=str(authority),
-                )
-                peyment_want_to_pay.successful = True
-                peyment_want_to_pay.save()
-                
             
-        if response['data']['code'] == 100 or response['data']['code'] == 101:
-            return HttpResponse("پرداخت موفق")
+        
+            payment_successful.send(sender=Payment, payment=peyment_want_to_pay)            
+            messages.success(request,"sucsesfull payment")
         else:
-            return HttpResponse('پرداخت ناموفق')
-    return HttpResponse('پرداخت ناموفق')
+            messages.error(request,"unsucsesfull payment")
+    else:
+        messages.error(request,"unsucsesfull payment")
+
+    return redirect("orders:order_detail",pk=peyment_want_to_pay.order.id)

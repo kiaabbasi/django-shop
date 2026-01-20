@@ -2,20 +2,20 @@
 
 {% block content %}
 
-<h2>سفارش‌های من</h2>
+<h2>Your Oeders</h2>
 
 {% for order in orders %}
     <div>
-        <p>سفارش #{{ order.id }}</p>
-        <p>وضعیت: {{ order.status }}</p>
+        <p>order #  {{ order.id }}</p>
+        <p>Status : {{ order.status }}</p>
 
         <a href="{% url 'orders:order_detail' order.id %}">
-            مشاهده جزئیات
+           Show details
         </a>
     </div>
     <hr>
 {% empty %}
-    <p>هنوز سفارشی ثبت نکرده‌اید.</p>
+    <p>you have no order yet</p>
 {% endfor %}
 
 {% endblock %}

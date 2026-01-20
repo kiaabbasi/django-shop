@@ -32,7 +32,7 @@ class LoginView(View):
             OTP_v= OTPVerification.objects.filter(user=user,otp_code=otp).last()
             if OTP_v and OTP_v.is_valid():
                 login(request, user)
-                return redirect("productList")
+                return redirect("products:product_list")
         return render(request, self.template_name, {'message': 'username or password is incorrect'})
     
     def handle_password(self, request):
@@ -42,7 +42,7 @@ class LoginView(View):
         
         if user :
             login(request,user)
-            return redirect("productList")
+            return redirect("products:product_list")
         return render(request, self.template_name, {'message': 'username or password is incorrect'})
 
 class SendOTPView(View):

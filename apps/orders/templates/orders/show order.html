@@ -10,13 +10,14 @@
 <p>وضعیت: {{ order.status }}</p>
 
 {% if order.status == "PENDING" %}
-    <form method="post" action="{url 'payments:create' order.pk %}">
+    <form method="post" action="{% url 'payments:create' order.pk %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-success">
             پرداخت سفارش 💳
         </button>
     </form>
 {% else %}
+<!-- show order status in futher  -->
     <p>این سفارش پرداخت شده است ✅</p>
 {% endif %}
 
