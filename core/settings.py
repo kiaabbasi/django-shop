@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.payments',
     'apps.zarinpal',
     'apps.TonCoin',
+    'apps.wallet',
 ]
 
 MIDDLEWARE = [

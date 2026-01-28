@@ -8,6 +8,18 @@ from apps.orders.models import Order
 from django.urls import reverse
 
 
+def get_redirect_url_for_payment(payment_method,payment_id):
+    
+    
+    
+    if payment_method == PaymentMethod.TonCoin:
+        pass
+    elif payment_method == PaymentMethod.ZARINPAL:
+        return  reverse("zarinpall:request",args=[payment_id])
+    elif payment_method == PaymentMethod.WALLET:
+        return reverse("wallet:request",args=[payment_id])
+    elif payment_method == PaymentMethod.INPLACEPAYMENT:
+        pass
 
 
 
@@ -20,18 +32,6 @@ class CreatePayment(LoginRequiredMixin,CreateView):
     fields = ["method"]
     
     
-    def get_redirect_url(self,payment_method,payment_id):
-     
-        
-        
-        if payment_method == PaymentMethod.TonCoin:
-            pass
-        elif payment_method == PaymentMethod.ZARINPAL:
-            return  reverse("zarinpall:request",args=[payment_id])
-        elif payment_method == PaymentMethod.WALLET:
-            pass
-        elif payment_method == PaymentMethod.INPLACEPAYMENT:
-            pass
 
     def form_valid(self, form):
         payment = form.save(commit=False)
@@ -45,7 +45,7 @@ class CreatePayment(LoginRequiredMixin,CreateView):
         payment.amount = amount
         payment.user = self.request.user
         payment.save()
-        self.success_url =self.get_redirect_url(form.cleaned_data['method'],payment.id)
+        self.success_url =get_redirect_url_for_payment(form.cleaned_data['method'],payment.id)
 
         
         return super().form_valid(form)
@@ -59,6 +59,6 @@ class CreatePayment(LoginRequiredMixin,CreateView):
             user=request.user
         )
         if hasattr(self.order, 'payment'):
-            return redirect(self.get_redirect_url(self.order.payment.method,self.order.payment.id))
+            return redirect(get_redirect_url_for_payment(self.order.payment.method,self.order.payment.id))
         return super().dispatch(request, *args, **kwargs)
     

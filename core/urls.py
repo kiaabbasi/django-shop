@@ -25,4 +25,5 @@ urlpatterns = [
     path("order/", include(("apps.orders.urls", "orders"), namespace="orders")),
     path("payment/", include(("apps.payments.urls", "payments"), namespace="payments")),
     path("zarinpall/", include(("apps.zarinpal.urls", "zarinpall"), namespace="zarinpall")),
+    path("wallet/", include(("apps.wallet.urls", "wallet"), namespace="wallets")),
 ]
