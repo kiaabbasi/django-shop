@@ -1,11 +1,23 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
-from django.views.generic import View
+from django.views.generic import View,UpdateView
 from django.http import JsonResponse
 from .models import OTPVerification
 import random
 from kavenegar import KavenegarAPI
 from core.settings import SMS_API_KEY
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import UserUpdateForm,CustomPasswordChangeForm
+from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
+
+
+User = get_user_model()
+
+
+
 
 class LoginView(View):
     template_name = 'users/login.html'
@@ -73,3 +85,38 @@ class SendOTPView(View):
             return JsonResponse({"message":"OTP Sent"},)
         else :
             return JsonResponse({"message":"Faild To send"},)
+        
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    template_name = "users/profile.html"
+    success_url = reverse_lazy("users:profile")
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_initial(self):
+        initial = super().get_initial()
+        user = self.request.user
+        initial.update({
+            "first_name": user.first_name,
+            "last_name":  user.last_name,
+            "email":      user.email,
+            "username":   user.username,
+            "phone_number": user.phone_number
+        })
+        return initial
+
+    def form_valid(self, form):
+        messages.success(self.request, "Your profile was updated successfully!")
+        return super().form_valid(form)
+
+
+class UserPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    form_class = CustomPasswordChangeForm
+    template_name = "users/change_password.html"
+    success_url = reverse_lazy("users:profile")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Your password has been changed successfully!")
+        return super().form_valid(form)
