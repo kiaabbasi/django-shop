@@ -24,6 +24,7 @@ class Order(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     order_type = models.CharField(max_length=10,choices=OrderType.choices,default=OrderType.Buy)
     order_date = models.DateTimeField(auto_now_add=True)
+    update_at  = models.DateTimeField(auto_now=True)
     status = models.CharField(
         max_length=20,
         choices=OrderStatus.choices,

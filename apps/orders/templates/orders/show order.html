@@ -17,8 +17,10 @@
         </button>
     </form>
 {% else %}
-<!-- show order status in futher  -->
-    <p>این سفارش پرداخت شده است ✅</p>
-{% endif %}
 
+{% endif %}
+<form action = '{% url "orders:cansel" order.id %}' method='post'>
+    {% csrf_token %}
+    <button type="submit">Cancel Order</button>
+</form>
 {% endblock %}
