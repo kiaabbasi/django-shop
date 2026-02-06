@@ -1,0 +1,28 @@
+<div class="comments-section mt-10">
+
+    {% if user.is_authenticated %}
+    <form method="post"
+          action="{% url 'comments:add_comment' object.pk %}"
+          class="mb-8 bg-gray-50 p-4 rounded shadow">
+        {% csrf_token %}
+        {{ form }}
+        <button class="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            Submit Comment
+        </button>
+    </form>
+    {% endif %}
+
+    <div class="space-y-6">
+        {% for comment in comments %}
+            {% include "comments/_comment.html" with comment=comment level=0 object=object %}
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+function showReplyForm(id){
+    let el = document.getElementById("reply-form-" + id);
+    el.classList.toggle("hidden");
+}
+</script>

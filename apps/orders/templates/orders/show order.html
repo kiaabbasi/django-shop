@@ -1,26 +1,55 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<h2>جزئیات سفارش</h2>
+<div class="max-w-3xl mx-auto mt-12 bg-white shadow-lg rounded-xl p-8">
 
-{% for i in order.items.all %}
-    {{i.product.name}} {{ i.quantity }} {{i.product.price}}
-{% endfor %}
-<p>وضعیت: {{ order.status }}</p>
+    <h2 class="text-2xl font-bold mb-6">Order Details #{{ order.id }}</h2>
 
-{% if order.status == "PENDING" %}
-    <form method="post" action="{% url 'payments:create' order.pk %}">
+    <div class="space-y-4">
+        {% for i in order.items.all %}
+        <div class="flex justify-between border-b pb-2">
+            <div>
+                <p class="font-semibold">{{ i.product.name }}</p>
+                <p class="text-sm text-gray-500">Quantity: {{ i.quantity }}</p>
+            </div>
+            <p class="font-semibold">
+                {{ i.product.price }}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-6">
+        <span class="font-semibold">Status:</span>
+        <span class="px-3 py-1 rounded-full
+            {% if order.status == 'PENDING' %}
+                bg-yellow-100 text-yellow-700
+            {% else %}
+                bg-green-100 text-green-700
+            {% endif %}
+        ">
+            {{ order.status }}
+        </span>
+    </div>
+
+    {% if order.status == "PENDING" %}
+    <form method="post" action="{% url 'payments:create' order.pk %}" class="mt-6">
         {% csrf_token %}
-        <button type="submit" class="btn btn-success">
-            پرداخت سفارش 💳
+        <button type="submit"
+                class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition">
+            💳 Pay Order
         </button>
     </form>
-{% else %}
+    {% endif %}
 
-{% endif %}
-<form action = '{% url "orders:cansel" order.id %}' method='post'>
-    {% csrf_token %}
-    <button type="submit">Cancel Order</button>
-</form>
+    <form action="{% url 'orders:cansel' order.id %}" method="post" class="mt-4">
+        {% csrf_token %}
+        <button type="submit"
+                class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">
+            Cancel Order
+        </button>
+    </form>
+
+</div>
+
 {% endblock %}

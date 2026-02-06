@@ -1,0 +1,41 @@
+<div class="mt-4" style="margin-left: {{ level }}px">
+
+    <div class="border rounded-lg p-4 bg-white shadow-sm">
+
+        <div class="flex justify-between items-center mb-2">
+            <strong class="text-gray-800">{{ comment.user }}</strong>
+            {% if comment.rate %}
+                <span class="text-yellow-500 text-sm">⭐ {{ comment.rate }}</span>
+            {% endif %}
+        </div>
+
+        <p class="text-gray-700">{{ comment.content }}</p>
+
+        {% if user.is_authenticated %}
+            <button onclick="showReplyForm({{ comment.id }})"
+                    class="text-blue-600 text-sm mt-3 hover:underline">
+                Reply
+            </button>
+
+            <form method="post"
+                  action="{% url 'comments:add_comment' object.pk %}"
+                  id="reply-form-{{ comment.id }}"
+                  class="hidden mt-3">
+                {% csrf_token %}
+                <textarea name="content"
+                          rows="2"
+                          class="w-full border rounded p-2"
+                          placeholder="Write a reply..."></textarea>
+                <input type="hidden" name="reply_to" value="{{ comment.id }}">
+                <button class="mt-2 bg-gray-800 text-white px-3 py-1 rounded">
+                    Send Reply
+                </button>
+            </form>
+        {% endif %}
+
+    </div>
+</div>
+
+{% for reply in comment.replies.all %}
+    {% include "comments/_comment.html" with comment=reply level=level|add:40 object=object %}
+{% endfor %}

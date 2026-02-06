@@ -1,21 +1,32 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<h2>Your Oeders</h2>
+<div class="max-w-4xl mx-auto mt-12">
 
-{% for order in orders %}
-    <div>
-        <p>order #  {{ order.id }}</p>
-        <p>Status : {{ order.status }}</p>
+    <h2 class="text-2xl font-bold mb-8">Your Orders</h2>
 
-        <a href="{% url 'orders:order_detail' order.id %}">
-           Show details
-        </a>
+    <div class="space-y-6">
+        {% for order in orders %}
+        <div class="bg-white shadow-md rounded-xl p-6 flex justify-between items-center">
+
+            <div>
+                <p class="font-semibold">Order #{{ order.id }}</p>
+                <p class="text-sm text-gray-500">Status: {{ order.status }}</p>
+            </div>
+
+            <a href="{% url 'orders:order_detail' order.id %}"
+               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+               Show Details
+            </a>
+
+        </div>
+        {% empty %}
+        <div class="bg-white p-6 rounded-xl shadow text-center text-gray-500">
+            You have no orders yet.
+        </div>
+        {% endfor %}
     </div>
-    <hr>
-{% empty %}
-    <p>you have no order yet</p>
-{% endfor %}
+
+</div>
 
 {% endblock %}

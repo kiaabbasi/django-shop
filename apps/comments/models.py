@@ -20,5 +20,5 @@ class Comment(models.Model):
     rate = models.IntegerField(choices=ratingChoices.choices, null=True, blank=True)
     
     def __str__(self):
-        return self.content[:20] + "..." if len(self.content) > 20 else ""  # Return first 20 characters of the comment
+        return f"{self.user} : {self.on_product}"
     

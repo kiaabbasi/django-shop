@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
@@ -7,11 +8,16 @@ class Product(models.Model):
     stock = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image = models.ImageField(upload_to='products/images', blank=True, null=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='products')
     def __str__(self):
         return self.name
     
+
+    def get_absolute_url(self):
+        return reverse("products:product_detail", args=[self.pk])
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)

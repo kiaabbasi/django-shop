@@ -1,9 +1,32 @@
 {% extends "base.html" %}
 
+{% block title %}Charge Wallet{% endblock %}
+
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value = "submit">
-</form>
+
+<div class="max-w-lg mx-auto mt-16 bg-white shadow-lg rounded-xl p-8 border">
+
+    <h2 class="text-2xl font-bold mb-6 text-center">Charge Your Wallet</h2>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+            {{ form.amount.label_tag }}
+            {{ form.amount }}
+        </div>
+
+        <div>
+            {{ form.balance_type.label_tag }}
+            {{ form.balance_type }}
+        </div>
+
+        <button type="submit"
+                class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded shadow">
+            Proceed to Payment
+        </button>
+    </form>
+
+</div>
+
 {% endblock content %}

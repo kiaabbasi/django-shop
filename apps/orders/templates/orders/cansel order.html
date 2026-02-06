@@ -1,9 +1,24 @@
 {% extends "base.html" %}
-
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    <p>Are you sure you want to cancel this order?</p>
-    <button type="submit">Yes, Cancel</button>
-</form>
-{% endblock content %}
+
+<div class="max-w-md mx-auto mt-20 bg-white shadow-lg rounded-xl p-8 text-center">
+    <h2 class="text-xl font-bold text-red-600 mb-4">Cancel Order</h2>
+
+    <p class="mb-6 text-gray-600">
+        Are you sure you want to cancel this order?
+    </p>
+
+    <form method="post" class="flex justify-center gap-4">
+        {% csrf_token %}
+        <a href="javascript:history.back()"
+           class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">
+            No
+        </a>
+        <button type="submit"
+                class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
+            Yes, Cancel
+        </button>
+    </form>
+</div>
+
+{% endblock %}

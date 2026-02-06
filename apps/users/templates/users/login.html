@@ -125,7 +125,7 @@
             let user_info = document.getElementById("username").value;
             
             let xhr = new XMLHttpRequest();
-            xhr.open("POST", "{% url 'send_otp' %}");
+            xhr.open("POST", "{% url 'accounts:send_otp' %}");
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
 

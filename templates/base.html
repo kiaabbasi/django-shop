@@ -1,39 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{% block title %}Shop{% endblock %}</title>
-    {% block header %}
-    {% endblock %}
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
+    <!-- Navbar -->
+   <nav class="bg-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-14">
+
+                <!-- Logo -->
+                <div class="flex items-center gap-8">
+                    <a href="/" class="text-2xl font-bold text-blue-600">MyShop</a>
+
+                    <div class="hidden md:flex items-center gap-6 text-gray-700 font-medium">
+                        <a href="{% url 'products:product_list' %}" class="hover:text-blue-600">Products</a>
+                        <a href="{% url 'cart:show_cart' %}" class="hover:text-blue-600">Cart</a>
+                        <a href="{% url 'orders:show_all_user_order' %}" class="hover:text-blue-600">Orders</a>
+                        <a href="{% url 'wallets:show_all_wallets' %}" class="hover:text-blue-600">Wallets</a>
+                    </div>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-sm text-gray-600">Hi, {{ user.username }}</span>
+                        <form method="post" action="{% url 'accounts:logout' %}">
+                            {% csrf_token %}
+                            <button  class="text-red-500 hover:underline" type="submit">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="hover:text-blue-600">Login</a>
+                    {% endif %}
+                </div>
+
+            </div>
         </div>
-    {% endfor %}
-{% endif %}
+    </nav>
 
-<nav>
-    <div style="display: flex;">
-        <a href="{% url 'products:product_list' %}">products</a>
-        &NonBreakingSpace;
-        <a href="{% url 'cart:show_cart' %}">cart</a>
-        &NonBreakingSpace;
-        <a href="{% url 'orders:show_all_user_order' %}">orders</a>
-        &NonBreakingSpace;
-        <a href="{% url 'wallets:show_all_wallets' %}">Wallets</a>
+    <!-- Content -->
+    <div class="max-w-5xl mx-auto mt-8">
 
+        <!-- Django messages -->
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+                {% if message.tags == "success" %}
+                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == "error" %}
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == "warning" %}
+                    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded shadow">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
 
-    <div>
-    <!-- navbar -->
-</nav>
+        <div class="bg-white p-6 shadow rounded">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 
-<main>
-    {% block content %}
-    {% endblock %}
-</main>
+    <!-- Footer -->
+    <footer class="text-center mt-10 text-sm text-gray-500">
+        © 2026 MyShop
+    </footer>
 
 </body>
 </html>

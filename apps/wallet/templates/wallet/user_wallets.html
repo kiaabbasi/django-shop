@@ -1,10 +1,37 @@
 {% extends "base.html" %}
 
+{% block title %}My Wallets{% endblock %}
+
 {% block content %}
 
+<h1 class="text-3xl font-bold mb-10">My Wallets</h1>
+
+<div class="grid md:grid-cols-2 gap-8">
+
     {% for w in wallets %}
-        {{w}}
+    <div class="bg-white rounded-xl shadow p-6 border flex justify-between items-center">
+
+        <div>
+            <h2 class="text-lg font-semibold text-gray-700">
+                {{ w.balance_type }} Wallet
+            </h2>
+            <p class="text-3xl font-bold text-green-600 mt-2">
+                {{ w.balance|floatformat:2 }}
+            </p>
+        </div>
+
+        <div>
+            <a href="{% url 'wallets:charge'  %}"
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+                Charge
+            </a>
+        </div>
+
+    </div>
+    {% empty %}
+        <p>No wallets found.</p>
     {% endfor %}
 
-{% endblock content %}
+</div>
 
+{% endblock content %}

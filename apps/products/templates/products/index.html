@@ -1,23 +1,52 @@
 {% extends "base.html" %}
 
 {% block title %}Products{% endblock %}
- 
+
 {% block content %}
 
-<h1>Product List</h1>
+<h1 class="text-3xl font-bold mb-6">Product List</h1>
 
-<ul>
-{% for product in products %}
-    <li>
-        {{product.name}}
-        <br>
-        {{product.price}}
-        <br>
-        <a href="{% url 'products:product_detail' product.id %}" >‌detail</a>
-    </li>
-{% empty %}
-    <li>No products found.</li>
-{% endfor %}
-</ul>
+<!-- Search Form -->
+<form method="get" action="{ % url 'products:search' %} " class="mb-8 flex max-w-md">
+    <input type="text"
+           name="q"
+           placeholder="Search products..."
+           class="flex-grow border rounded-l px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+           value="{{ request.GET.q }}">
+    <button type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700">
+        Search
+    </button>
+</form>
+
+{% if products %}
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+    {% for product in products %}
+    <div class="bg-white rounded-xl shadow p-4 flex flex-col hover:shadow-lg transition">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="h-48 w-full object-cover rounded mb-4">
+        {% else %}
+            <div class="h-48 w-full bg-gray-200 rounded flex items-center justify-center mb-4">
+                No Image
+            </div>
+        {% endif %}
+
+        <h2 class="font-semibold text-lg">{{ product.name }}</h2>
+        <p class="text-green-600 font-bold mt-1">${{ product.price }}</p>
+
+        <a href="{% url 'products:product_detail' product.id %}"
+           class="mt-auto inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 text-center">
+           View Details
+        </a>
+    </div>
+    {% endfor %}
+
+</div>
+{% else %}
+<div class="text-center text-gray-500 mt-12">
+    No products found.
+</div>
+{% endif %}
 
 {% endblock %}

@@ -1,31 +1,67 @@
 {% extends "base.html" %}
 
+{% block title %}Your Cart{% endblock %}
+
 {% block content %}
-<h2>Your Cart</h2>
 
-<ul>
-{% for item in cart.items.all %}
-    <li>
-        {{ item.product.name }} — {{ item.quantity }}
-        <form action="{% url 'cart:decrease_item' item.product.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">deacris</button>
-        </form>
-        <form action="{% url 'cart:add_to_cart' item.product.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Add more</button>
-        </form>
+<h1 class="text-3xl font-bold mb-8">Your Shopping Cart</h1>
 
-    </li>
+{% if cart.items.all %}
+
+<div class="space-y-6">
+
+    {% for item in cart.items.all %}
+    <div class="flex items-center justify-between border rounded-lg p-4 shadow-sm">
+
+        <!-- اطلاعات محصول -->
+        <div>
+            <h2 class="font-semibold text-lg">{{ item.product.name }}</h2>
+            <p class="text-gray-500">Quantity: {{ item.quantity }}</p>
+        </div>
+
+        <!-- دکمه‌ها -->
+        <div class="flex items-center gap-3">
+
+            <form action="{% url 'cart:decrease_item' item.product.id %}" method="post">
+                {% csrf_token %}
+                <button class="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300">-</button>
+            </form>
+
+            <form action="{% url 'cart:add_to_cart' item.product.id %}" method="post">
+                {% csrf_token %}
+                <button class="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300">+</button>
+            </form>
+
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- اکشن‌های پایین سبد -->
+<div class="mt-10 flex justify-between items-center border-t pt-6">
+
+    <a href="{% url 'cart:delete_cart' %}"
+       class="text-red-600 hover:underline">
+        Empty Cart
+    </a>
+
     <form action="{% url 'orders:create' %}" method="post">
         {% csrf_token %}
-        <button type="submit">Check Out</button>
+        <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded shadow">
+            Proceed to Checkout
+        </button>
     </form>
-    <a href="{% url 'cart:delete_cart' %}">delete</a>
 
-{% empty %}
-    <li>No items in cart</li>
-{% endfor %}
-</ul>
+</div>
+
+{% else %}
+
+<div class="text-center text-gray-500 mt-20">
+    Your cart is empty 🛒
+</div>
+
+{% endif %}
 
 {% endblock %}
