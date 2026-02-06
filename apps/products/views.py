@@ -6,11 +6,26 @@ from django.db.models import Prefetch
 from apps.comments.models import Comment
 
 class ProductsView(ListView):
-    template_name = 'products/index.html'
     model = Product
-    
-    context_object_name = "products"      # optional, پیش‌فرض: object_list
-    paginate_by = 10  
+    template_name = 'products/index.html'
+    context_object_name = 'products'
+    paginate_by = 10  # اختیاری، برای pagination
+
+    def get_queryset(self):
+        """
+        اگر پارامتر ?q= در URL باشد → جستجو
+        در غیر این صورت → همه محصولات
+        """
+        query = self.request.GET.get('q', '')
+        qs = Product.objects.all()
+        if query:
+            qs = qs.filter(name__icontains=query)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')  # تا فیلد جستجو پر شود
+        return context
 
 class ProductView(DetailView):
     model = Product
@@ -37,15 +52,3 @@ class ProductView(DetailView):
         return context
     
 
-def product_search(request):
-    query = request.GET.get('q', '')  # گرفتن متن جستجو از URL
-    if query:
-        products = Product.objects.filter(name__icontains=query)
-    else:
-        products = Product.objects.all()  # اگر خالی بود، همه محصولات
-
-    context = {
-        "products": products,
-        "query": query,
-    }
-    return render(request, "products/product_list.html", context)
