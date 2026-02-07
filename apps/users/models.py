@@ -4,12 +4,11 @@ from django.utils import timezone
 from datetime import timedelta
 
 class CustomUser(AbstractUser):
-    phone_number = models.CharField(max_length=20, blank=True, null=True,unique=True)
+    phone_number = models.CharField(max_length=20,verbose_name="شماره تماس", blank=True, null=True,unique=True)
     is_verified = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
    
-
     def __str__(self):
         return self.username
 

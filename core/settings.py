@@ -135,6 +135,10 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/media/'      # URL to access media files
 MEDIA_ROOT = BASE_DIR / 'media' # phisycal Directory to store media files
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -153,6 +157,6 @@ SMS_API_KEY = os.getenv("SMS_API_KEY")
 
 #Zarinpal
 MERCHANT = "4540fc92-5824-46e1-9020-623b69927f2e"
-SANDBOX = True
+SANDBOX = False
 
 

@@ -6,7 +6,11 @@ from .models import CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-   
+    class Media:
+        css = {
+            'all': ('admin/css/custome.css',)
+        }
+
     list_display = ('username', 'email', 'is_staff', 'is_active','is_verified','last_login')
     list_filter = ('is_staff', 'is_active','is_verified')
 
